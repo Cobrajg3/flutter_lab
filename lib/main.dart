@@ -1,74 +1,54 @@
 import 'package:flutter/material.dart';
-
+import 'data.dart';
+import 'home.dart';
 void main() {
   runApp(
     MaterialApp(
-      home: LAB_1(),
+      home: MyApp(),
     ),
   );
 }
 
 
-class LAB_1 extends StatelessWidget {
-  LAB_1({super.key});
-  String fullSurname = '', fullName = '';
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+  ScheduleData scheduleData = ScheduleData();
+  late List<String> groups = scheduleData.getGroupsNames();
+  late String? selectedGroup = groups[0];
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Збір даних',
-        home: Scaffold(
-            appBar: AppBar(title:Text('Збір даних'), backgroundColor: Colors.red,),
-            body: Center(child: Column(children: <Widget>[
-              Container(
-                  margin: const EdgeInsets.all(20),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Введіть Прізвище',
-                    ),
-                    onChanged: (text) {
-                      fullSurname = text;
-                    },
-                  )),
-              Container(
-                  margin: const EdgeInsets.all(20),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Введіть ім'я",
-                    ),
-                    onChanged: (text) {
-                      fullName = text;
-                    },
-                  )),
-              Container(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LogPage(fullSurname : fullSurname, fullName : fullName )));
-                    },
-                    child: const Text('Далі'),
-                  )
-              ),],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: Text('Групи'),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.lime,
+      body: Center(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(320, 320, 320, 15),
+              child: DropdownButton<String>(
+                  value: groups.first,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  items: groups
+                      .map((group) =>
+                      DropdownMenuItem(
+                        value: group,
+                        child: Text(group),
+                      ))
+                      .toList(),
+                  onChanged: (String? newGroup) {selectedGroup = newGroup;}
+              ),
             ),
-            )));
-  }
-}
-
-class LogPage extends StatelessWidget {
-  String fullSurname, fullName;
-  LogPage({required this.fullSurname,required this.fullName});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Привітання',
-      home: Scaffold(
-        appBar: AppBar(title: Text('Привітання')),
-        body:Center(
-          child:Text(
-            'Вітаю $fullSurname $fullName',
-          ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home(selectedGroup : selectedGroup)));
+                },
+                child: Text('Далі'))
+          ],
         ),
       ),
     );
-  }
-}
+  }}
